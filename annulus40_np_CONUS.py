@@ -12,6 +12,7 @@
 #  d:/sAnderson/salr/annulus40_np_CONUS.py  -- one line
 
 # Import system modules
+import os
 import sys
 import json
 import time
@@ -39,64 +40,55 @@ with open('ring_params.json') as f:
     ring_params = json.load(f)
 numrings = len(ring_params)
   
-# Get a list of TIFF files to process
-search_string = f'{inputDir}/CONUS_{year}*.tif'
-fns = glob.glob(search_string)
-fns = [f.replace("\\","/") for f in fns]
-
-# Notify if no files found
-if len(fns) == 0:
-    print(f'No input TIFF files found using search string:\n  "{search_string}"')
+# Define raster for input, VIIRS day/night band
+# values less than 0.5 nano-watts set to zero
+# projected over to Albers USGS
+file = f'{inputDir}/CONUS_{year}_viirs.tif'
+if os.path.isfile(file):
+    print(f"{file} does not exist!")
     sys.exit(1)
+print(f'Processing {file}')
 
-# Loop through all available input rasters
+# Loop through all rings
 print(f"Number of rings = {numrings}")
-for file in fns:
+completed_rings = []
+for ringnum in range(1,numrings+1):
 
-    # Define raster for input, VIIRS day/night band
-    # values less than 0.5 nano-watts set to zero
-    # projected over to Albers USGS
-    print(file)
-    
-    # Loop through all rings
-    completed_rings = []
-    for ringnum in range(1,numrings+1):
+    print(f'Ring Number = {ringnum:2d}, {time.strftime("%c")}')
 
-        print(f'Ring Number = {ringnum:2d}, {time.strftime("%c")}')
+    # Retrieve current ring parameters
+    ringIn = ring_params[str(ringnum)][0]
+    ringOut = ring_params[str(ringnum)][1]
+    wfact = ring_params[str(ringnum)][2]
+    if ringIn == 0.0:
+        ringIn = 500.0
 
-        # Retrieve current ring parameters
-        ringIn = ring_params[str(ringnum)][0]
-        ringOut = ring_params[str(ringnum)][1]
-        wfact = ring_params[str(ringnum)][2]
-        if ringIn == 0.0:
-            ringIn = 500.0
+    # Skip over rings with undefined radii
+    if ringIn == -999.0:
+        continue
 
-        # Skip over rings with undefined radii
-        if ringIn == -999.0:
-            continue
+    # Run focal stats command with defined annulus region
+    neighborhood = arcpy.sa.NbrAnnulus(ringIn, ringOut, "MAP")
+    rann = arcpy.sa.FocalStatistics(file, neighborhood, "SUM", "DATA")
 
-        # Run focal stats command with defined annulus region
-        neighborhood = arcpy.sa.NbrAnnulus(ringIn, ringOut, "MAP")
-        rann = arcpy.sa.FocalStatistics(file, neighborhood, "SUM", "DATA")
+    # Multiply ring grid by weighting factor
+    rannw = rann * wfact
 
-        # Multiply ring grid by weighting factor
-        rannw = rann * wfact
-
-        # Save in workspace folder
-        ringName = f"r{ringnum}"
-        rannw.save(ringName)
-        completed_rings.append(ringName)
+    # Save in workspace folder
+    ringName = f"r{ringnum}"
+    rannw.save(ringName)
+    completed_rings.append(ringName)
 
 
-    # Sum all ring grids
-    print("Running Sum...")
-    rA = sum([arcpy.sa.Raster(r) for r in completed_rings])
+# Sum all ring grids
+print("Running Sum...")
+rA = sum([arcpy.sa.Raster(r) for r in completed_rings])
 
-    # Calibrate to ALR based upon southern california 
-    # Feb-2015 observations shown in 2015 sALR paper
-    rAc = rA * 0.00177708
+# Calibrate to ALR based upon southern california 
+# Feb-2015 observations shown in 2015 sALR paper
+rAc = rA * 0.00177708
 
-    # Save to file
-    sumFile = f"{outputDir}/salr_{year}.tif"
-    rAc.save(sumFile)
-    print( "Done - ALR Processing", sumFile, time.strftime("%c"))
+# Save to file
+sumFile = f"{outputDir}/salr_{year}.tif"
+rAc.save(sumFile)
+print( "Done - ALR Processing", sumFile, time.strftime("%c"))
