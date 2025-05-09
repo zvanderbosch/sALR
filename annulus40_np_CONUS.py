@@ -35,7 +35,7 @@ arcpy.env.rasterStatistics = 'STATISTICS 1 1 (-999)'
 
 # Load in ring properties. Line format of dict is
 # ring_number: [inner_radius, outer_radius, weight]
-with open('ring_params.json') as f:
+with open(f'{inputDir}/ring_params.json') as f:
     ring_params = json.load(f)
 numrings = len(ring_params)
   
