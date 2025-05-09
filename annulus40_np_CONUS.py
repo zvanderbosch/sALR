@@ -4,6 +4,7 @@
 # March 2013 by D Duriscoe NPS Night Sky Program and D Theobald
 # Revised Nov 2015 for VIIRS day/night band input
 # 2022 - 03 - 22 Run the final 2019 and 2020 CONUS files
+# Revised May 2025 by Zach Vanderbosch (NPS Night Skies Program)
 
 # to run open python command prompt from ArcGIS start menu
 # example call:
@@ -17,8 +18,10 @@ import time
 import arcpy
 import glob
 
-# Base directory for sALR modeling
+# Define directories for sALR modeling
 salrBase = "C:/Users/zvanderbosch/data/sALR"
+inputDir = f"{salrBase}/sALR_inputs"
+outputDir = f"{salrBase}/sALR_outpus"
 
 # Define year for analysis. 
 # An empty string will analyze all years available.
@@ -37,7 +40,7 @@ with open('ring_params.json') as f:
 numrings = len(ring_params)
   
 # Get a list of TIFF files to process
-search_string = f'{salrBase}/sALR_inputs/CONUS_{year}*.tif'
+search_string = f'{inputDir}/CONUS_{year}*.tif'
 fns = glob.glob(search_string)
 fns = [f.replace("\\","/") for f in fns]
 
@@ -94,6 +97,6 @@ for file in fns:
     rAc = rA * 0.00177708
 
     # Save to file
-    sumFile = f"{salrBase}/sALR_models/salr_{year}.tif"
+    sumFile = f"{outputDir}/salr_{year}.tif"
     rAc.save(sumFile)
     print( "Done - ALR Processing", sumFile, time.strftime("%c"))
