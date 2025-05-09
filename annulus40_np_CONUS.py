@@ -17,7 +17,6 @@ import sys
 import json
 import time
 import arcpy
-import glob
 
 # Define directories for sALR modeling
 salrBase = "C:/Users/zvanderbosch/data/sALR"
