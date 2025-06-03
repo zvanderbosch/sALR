@@ -6,10 +6,13 @@
 # 2022 - 03 - 22 Run the final 2019 and 2020 CONUS files
 # Revised May 2025 by Zach Vanderbosch (NPS Night Skies Program)
 
-# to run open python command prompt from ArcGIS start menu
-# example call:
-# (arcgispro-py3) C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3>python 
-#  d:/sAnderson/salr/annulus40_np_CONUS.py  -- one line
+# To run this script, open a Windows Terminal, change directories
+# to the sALR directory where this script exists, and activate 
+# your arcgispro-py3 environment:
+#
+# > cd path/to/sALR
+# > conda activate arcgispro-py3
+# > python annulus40_np_CONUS.py
 
 # Import system modules
 import os
