@@ -1,5 +1,7 @@
 # sALR All-Sky Light Pollution Model
 
+[![DOI](https://zenodo.org/badge/980192014.svg)](https://doi.org/10.5281/zenodo.15587614)
+
 A Python and ArcGIS Pro implementation of the simplified All-Sky Light Pollution Ratio (sALR) model described in [Dan Duriscoe et al. 2018](https://www.sciencedirect.com/science/article/pii/S0022407317308749), "A simplified model of all-sky artificial sky glow derived from VIIRS Day/Night band data". This code is used by National Park Service [Natural Sounds and Night Skies Division (NSNSD)](https://www.nps.gov/orgs/1050/index.htm) staff to generate regional light pollution maps for parks.
 
 Input data for the model comes from the Colorado School of Mines [Earth Observation Group](https://eogdata.mines.edu/products/vnl/), who produce annual composites of VIIRS Day-Night Band satellite imagery of nighttime lights.
