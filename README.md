@@ -4,6 +4,8 @@ A Python and ArcGIS Pro implementation of the simplified All-Sky Light Pollution
 
 Input data for the model comes from the Colorado School of Mines [Earth Observation Group](https://eogdata.mines.edu/products/vnl/), who produce annual composites of VIIRS Day-Night Band satellite imagery of nighttime lights.
 
-<img src="static/sALR_2020_Layout.png?raw=true" alt="2020 sALR Model" width="90%"/>
-
 Details on how to run the sALR model pipeline can be found in the [sALR_Pipeline_docs.pdf](docs/sALR_pipeline_docs.pdf)
+
+
+## Continental U.S. sALR Light Pollution Map (2020)
+<img src="static/sALR_2020_Layout.png?raw=true" alt="2020 sALR Model" width="90%"/>
